@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Even or Odd Number Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .title {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .container {
+            display: flex;
+            flex: 1;
+        }
+        .code-panel {
+            width: 66.67%;
+            padding: 20px;
+            background: linear-gradient(to bottom right, #f0f0f0, #e0e0e0);
+            overflow-y: auto;
+        }
+        .input-panel {
+            width: 33.33%;
+            padding: 20px;
+            background-color: #e6f3ff;
+        }
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+        .highlight {
+            background-color: yellow;
+        }
+        button {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #startButton { background-color: #4CAF50; color: white; }
+        #nextButton { background-color: #FFEB3B; color: black; }
+        #restartButton { background-color: #2196F3; color: white; }
+        input {
+            margin: 10px 0;
+            padding: 5px;
+            width: 100%;
+        }
+        #output {
+            margin-top: 20px;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">Even or Odd Number Checker</div>
+    <div class="container">
+        <div class="code-panel">
+            <pre id="codeDisplay"></pre>
+            <div id="finalResult"></div>
+        </div>
+        <div class="input-panel">
+            <div id="inputSection">
+                <input type="number" id="numberInput" placeholder="Enter an integer">
+                <button id="startButton">Start Execution</button>
+            </div>
+            <button id="nextButton" style="display: none;">Next Step</button>
+            <button id="restartButton" style="display: none;">Restart</button>
+            <div id="output"></div>
+        </div>
+    </div>
+    <footer>
+        A.MALLAIAH, Assoc.Professor, ECE Dept., SRGEC. +91-7416757609
+    </footer>
+
+    <script>
+        const code = `#include <stdio.h>
+
+int main() {
+    int number;
+    printf("Enter an integer: ");
+    scanf("%d", &number);
+
+    if (number % 2 == 0) {
+        printf("%d is Even\\n", number);
+    } else {
+        printf("%d is Odd\\n", number);
+    }
+    return 0;
+}`;
+
+        const codeLines = code.split('\n');
+        let currentLine = 0;
+        let number;
+
+        function displayCode() {
+            const codeDisplay = document.getElementById('codeDisplay');
+            codeDisplay.innerHTML = codeLines.map((line, index) => 
+                `<div id="line${index}">${line}</div>`
+            ).join('');
+        }
+
+        function highlightLine(lineNumber) {
+            document.querySelectorAll('.highlight').forEach(el => el.classList.remove('highlight'));
+            document.getElementById(`line${lineNumber}`).classList.add('highlight');
+        }
+
+        function showOutput(message) {
+            document.getElementById('output').innerHTML += message + '<br>';
+        }
+
+        function startExecution() {
+            number = parseInt(document.getElementById('numberInput').value);
+            document.getElementById('inputSection').style.display = 'none';
+            document.getElementById('nextButton').style.display = 'block';
+            document.getElementById('restartButton').style.display = 'block';
+            currentLine = 0;
+            showOutput('Execution started.');
+            nextStep();
+        }
+
+        function nextStep() {
+            if (currentLine < codeLines.length) {
+                highlightLine(currentLine);
+                switch(currentLine) {
+                    case 3:
+                        showOutput('Entering main function.');
+                        break;
+                    case 4:
+                        showOutput('Declaring variable "number".');
+                        break;
+                    case 5:
+                        showOutput('Prompting user for input.');
+                        break;
+                    case 6:
+                        showOutput(`User input: ${number}`);
+                        break;
+                    case 8:
+                        if (number % 2 === 0) {
+                            showOutput(`${number} is even. Entering if block.`);
+                        } else {
+                            showOutput(`${number} is odd. Skipping if block.`);
+                            currentLine = 10;
+                        }
+                        break;
+                    case 9:
+                        showOutput(`Printing: ${number} is Even`);
+                        currentLine = 11;
+                        break;
+                    case 11:
+                        showOutput(`Printing: ${number} is Odd`);
+                        break;
+                    case 13:
+                        showOutput('Returning from main function.');
+                        document.getElementById('finalResult').innerHTML = `<strong style="background-color: yellow; padding: 2px 5px;">Final Result: ${number} is ${number % 2 === 0 ? 'Even' : 'Odd'}</strong>`;
+                        document.getElementById('nextButton').style.display = 'none';
+                        break;
+                }
+                currentLine++;
+            }
+        }
+
+        function restart() {
+            location.reload();
+        }
+
+        window.onload = function() {
+            displayCode();
+            document.getElementById('startButton').addEventListener('click', startExecution);
+            document.getElementById('nextButton').addEventListener('click', nextStep);
+            document.getElementById('restartButton').addEventListener('click', restart);
+        };
+    </script>
+</body>
+</html>

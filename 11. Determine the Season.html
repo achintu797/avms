@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Season Determiner Simulator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .content {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .left-panel {
+            width: 66.67%;
+            padding: 20px;
+            border-right: 1px solid #ccc;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .right-panel {
+            width: 33.33%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+        .highlight {
+            background-color: yellow;
+        }
+        #output, #finalResult {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        button, input {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #startButton {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #nextStepButton {
+            background-color: #FFEB3B;
+            color: black;
+        }
+        #restartButton {
+            background-color: #2196F3;
+            color: white;
+        }
+        footer {
+            background-color: #f0f0f0;
+            padding: 10px;
+            text-align: center;
+        }
+        .final-highlight {
+            background-color: #90EE90;
+            font-weight: bold;
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="left-panel">
+            <h2><strong>Season Determiner</strong></h2>
+            <pre id="codeArea">
+#include &lt;stdio.h&gt;
+
+int main() {
+    int month;
+    printf("Enter the month number (1-12): ");
+    scanf("%d", &month);
+
+    if (month == 12 || month == 1 || month == 2) {
+        printf("Winter\n");
+    } else if (month >= 3 && month <= 5) {
+        printf("Spring\n");
+    } else if (month >= 6 && month <= 8) {
+        printf("Summer\n");
+    } else if (month >= 9 && month <= 11) {
+        printf("Fall\n");
+    } else {
+        printf("Invalid month\n");
+    }
+    return 0;
+}
+            </pre>
+            <div id="finalResult"></div>
+        </div>
+        <div class="right-panel">
+            <h2>Execution Output</h2>
+            <div id="inputSection">
+                <input type="number" id="inputMonth" placeholder="Enter month number (1-12)">
+                <button onclick="startExecution()" id="startButton">Start Execution</button>
+            </div>
+            <div id="output"></div>
+            <button onclick="nextStep()" id="nextStepButton" style="display: none;">Next Step</button>
+            <button onclick="restart()" id="restartButton" style="display: none;">Restart</button>
+        </div>
+    </div>
+    <footer>
+        A.MALLAIAH, Assoc.Professor, ECE Dept., SRGEC. +91-7416757609
+    </footer>
+
+    <script>
+        let currentStep = 0;
+        let month;
+        const outputDiv = document.getElementById('output');
+        const codeArea = document.getElementById('codeArea');
+        const finalResult = document.getElementById('finalResult');
+
+        function startExecution() {
+            month = parseInt(document.getElementById('inputMonth').value);
+            document.getElementById('inputSection').style.display = 'none';
+            document.getElementById('nextStepButton').style.display = 'block';
+            outputDiv.innerHTML = 'Execution started.<br>';
+            currentStep = 0;
+            nextStep();
+        }
+
+        function nextStep() {
+            const codeLines = codeArea.innerText.split('\n');
+            if (currentStep < codeLines.length) {
+                highlightLine(currentStep);
+                switch(currentStep) {
+                    case 4:
+                        outputDiv.innerHTML += 'Declaring variable month.<br>';
+                        break;
+                    case 5:
+                        outputDiv.innerHTML += 'Prompting user for input.<br>';
+                        break;
+                    case 6:
+                        outputDiv.innerHTML += `Reading month: ${month}<br>`;
+                        break;
+                    case 8:
+                        if (month == 12 || month == 1 || month == 2) {
+                            outputDiv.innerHTML += `Month is ${month}. Entering first if block (Winter).<br>`;
+                        } else if (month >= 3 && month <= 5) {
+                            outputDiv.innerHTML += `Month is ${month}. Entering first else if block (Spring).<br>`;
+                            currentStep = 10;
+                        } else if (month >= 6 && month <= 8) {
+                            outputDiv.innerHTML += `Month is ${month}. Entering second else if block (Summer).<br>`;
+                            currentStep = 12;
+                        } else if (month >= 9 && month <= 11) {
+                            outputDiv.innerHTML += `Month is ${month}. Entering third else if block (Fall).<br>`;
+                            currentStep = 14;
+                        } else {
+                            outputDiv.innerHTML += `Month is ${month}. Entering else block (Invalid month).<br>`;
+                            currentStep = 16;
+                        }
+                        break;
+                    case 9:
+                    case 11:
+                    case 13:
+                    case 15:
+                    case 17:
+                        let season = month == 12 || month == 1 || month == 2 ? "Winter" :
+                                     month >= 3 && month <= 5 ? "Spring" :
+                                     month >= 6 && month <= 8 ? "Summer" :
+                                     month >= 9 && month <= 11 ? "Fall" :
+                                     "Invalid month";
+                        outputDiv.innerHTML += `Printing result: ${season}<br>`;
+                        finalResult.innerHTML = `<span class="final-highlight">Final Result: Month ${month} - ${season}</span>`;
+                        document.getElementById('nextStepButton').style.display = 'none';
+                        document.getElementById('restartButton').style.display = 'block';
+                        break;
+                }
+                currentStep++;
+            }
+        }
+
+        function highlightLine(lineNumber) {
+            const codeLines = codeArea.innerHTML.split('\n');
+            codeLines[lineNumber] = `<span class="highlight">${codeLines[lineNumber]}</span>`;
+            codeArea.innerHTML = codeLines.join('\n');
+        }
+
+        function restart() {
+            document.getElementById('inputSection').style.display = 'block';
+            document.getElementById('inputMonth').value = '';
+            outputDiv.innerHTML = '';
+            finalResult.innerHTML = '';
+            document.getElementById('restartButton').style.display = 'none';
+            document.getElementById('nextStepButton').style.display = 'none';
+            codeArea.innerHTML = codeArea.innerHTML.replace(/<span class="highlight">/g, '').replace(/<\/span>/g, '');
+            currentStep = 0;
+        }
+    </script>
+</body>
+</html>

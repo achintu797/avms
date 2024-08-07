@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Sign Checker Simulator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .content {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .left-panel {
+            width: 66.67%;
+            padding: 20px;
+            border-right: 1px solid #ccc;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .right-panel {
+            width: 33.33%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+        .highlight {
+            background-color: yellow;
+        }
+        #output, #finalResult {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        button, input {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #startButton {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #nextStepButton {
+            background-color: #FFEB3B;
+            color: black;
+        }
+        #restartButton {
+            background-color: #2196F3;
+            color: white;
+        }
+        footer {
+            background-color: #f0f0f0;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="left-panel">
+            <h2><strong>Check if a Number is Positive, Negative, or Zero</strong></h2>
+            <pre id="codeArea">
+#include &lt;stdio.h&gt;
+
+int main() {
+    float number;
+    printf("Enter a number: ");
+    scanf("%f", &number);
+
+    if (number > 0) {
+        printf("%f is Positive\n", number);
+    } else if (number < 0) {
+        printf("%f is Negative\n", number);
+    } else {
+        printf("Zero\n");
+    }
+    return 0;
+}
+            </pre>
+            <div id="finalResult"></div>
+        </div>
+        <div class="right-panel">
+            <h2>Execution Output</h2>
+            <input type="number" id="numberInput" placeholder="Enter a number" step="any">
+            <button onclick="startExecution()" id="startButton">Start Execution</button>
+            <div id="output"></div>
+            <button onclick="nextStep()" id="nextStepButton" disabled>Next Step</button>
+            <button onclick="restart()" id="restartButton" style="display: none;">Restart</button>
+        </div>
+    </div>
+    <footer>
+        A.MALLAIAH, Assoc.Professor, ECE Dept., SRGEC. +91-7416757609
+    </footer>
+
+    <script>
+        let currentStep = 0;
+        let number;
+        const outputDiv = document.getElementById('output');
+        const codeArea = document.getElementById('codeArea');
+        const finalResult = document.getElementById('finalResult');
+
+        function startExecution() {
+            number = parseFloat(document.getElementById('numberInput').value);
+            outputDiv.innerHTML = 'Execution started.<br>';
+            outputDiv.innerHTML += `User input: ${number}<br>`;
+            document.getElementById('nextStepButton').disabled = false;
+            currentStep = 0;
+            nextStep();
+        }
+
+        function nextStep() {
+            const codeLines = codeArea.innerText.split('\n');
+            if (currentStep < codeLines.length) {
+                highlightLine(currentStep);
+                switch(currentStep) {
+                    case 4:
+                        outputDiv.innerHTML += 'Declaring variable "number".<br>';
+                        break;
+                    case 5:
+                        outputDiv.innerHTML += 'Prompting user for input.<br>';
+                        break;
+                    case 6:
+                        outputDiv.innerHTML += `Reading user input: ${number}<br>`;
+                        break;
+                    case 8:
+                        if (number > 0) {
+                            outputDiv.innerHTML += `${number} is positive. Entering if block.<br>`;
+                        } else if (number < 0) {
+                            outputDiv.innerHTML += `${number} is negative. Entering else if block.<br>`;
+                            currentStep = 10;
+                        } else {
+                            outputDiv.innerHTML += `${number} is zero. Entering else block.<br>`;
+                            currentStep = 12;
+                        }
+                        break;
+                    case 9:
+                    case 11:
+                    case 13:
+                        let result = number > 0 ? "Positive" : (number < 0 ? "Negative" : "Zero");
+                        outputDiv.innerHTML += `Printing: ${number} is ${result}<br>`;
+                        finalResult.innerHTML = `<strong>Final Result:</strong> ${number} is ${result}`;
+                        document.getElementById('nextStepButton').disabled = true;
+                        document.getElementById('restartButton').style.display = 'block';
+                        break;
+                }
+                currentStep++;
+            }
+        }
+
+        function highlightLine(lineNumber) {
+            const codeLines = codeArea.innerHTML.split('\n');
+            codeLines[lineNumber] = `<span class="highlight">${codeLines[lineNumber]}</span>`;
+            codeArea.innerHTML = codeLines.join('\n');
+        }
+
+        function restart() {
+            document.getElementById('numberInput').value = '';
+            outputDiv.innerHTML = '';
+            finalResult.innerHTML = '';
+            document.getElementById('restartButton').style.display = 'none';
+            document.getElementById('nextStepButton').disabled = true;
+            codeArea.innerHTML = codeArea.innerHTML.replace(/<span class="highlight">/g, '').replace(/<\/span>/g, '');
+            currentStep = 0;
+        }
+    </script>
+</body>
+</html>

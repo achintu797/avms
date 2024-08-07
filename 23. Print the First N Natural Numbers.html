@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>First N Natural Numbers Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .content {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .left-panel {
+            width: 50%;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-right: 1px solid #ccc;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .right-panel {
+            width: 50%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+        .highlight {
+            background-color: #FFFF00;
+        }
+        #output {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        #finalResult {
+            margin-top: 20px;
+            background-color: #90EE90;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        button, input {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #startButton {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #nextStepButton {
+            background-color: #FFEB3B;
+            color: black;
+        }
+        #restartButton {
+            background-color: #2196F3;
+            color: white;
+        }
+        footer {
+            background-color: #f0f0f0;
+            padding: 10px;
+            text-align: center;
+        }
+        .input-condition {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="left-panel">
+            <h2>First N Natural Numbers Generator</h2>
+            <pre id="codeArea">
+#include &lt;stdio.h&gt;
+
+int main() {
+    int n;
+    
+    printf("Enter a positive integer N: ");
+    scanf("%d", &n);
+    
+    printf("The first %d natural numbers are:\n", n);
+    for (int i = 1; i <= n; i++) {
+        printf("%d ", i);
+    }
+    printf("\n");
+    
+    return 0;
+}
+            </pre>
+            <div id="finalResult"></div>
+        </div>
+        <div class="right-panel">
+            <div class="input-condition">Input Condition: Enter a positive integer N</div>
+            <h2>Execution Output</h2>
+            <div id="inputSection">
+                <input type="number" id="inputNum" placeholder="Enter a positive integer N">
+                <button onclick="startExecution()" id="startButton">Start Execution</button>
+            </div>
+            <div id="output"></div>
+            <button onclick="nextStep()" id="nextStepButton" style="display: none;">Next Step</button>
+            <button onclick="restart()" id="restartButton" style="display: none;">Restart</button>
+        </div>
+    </div>
+    <footer>
+        A.MALLAIAH, Assoc.Professor, ECE Dept., SRGEC. +91-7416757609
+    </footer>
+
+    <script>
+        let currentStep = 0;
+        let n, i;
+        const outputDiv = document.getElementById('output');
+        const codeArea = document.getElementById('codeArea');
+        const finalResult = document.getElementById('finalResult');
+
+        function startExecution() {
+            n = parseInt(document.getElementById('inputNum').value);
+            i = 1;
+            document.getElementById('inputSection').style.display = 'none';
+            document.getElementById('nextStepButton').style.display = 'block';
+            outputDiv.innerHTML = 'Execution started.<br>';
+            finalResult.innerHTML = '';
+            currentStep = 0;
+            nextStep();
+        }
+
+        function nextStep() {
+            const codeLines = codeArea.innerText.split('\n');
+            if (currentStep < codeLines.length) {
+                highlightLine(currentStep);
+                switch(currentStep) {
+                    case 4:
+                        outputDiv.innerHTML += 'Initializing variable n.<br>';
+                        break;
+                    case 6:
+                        outputDiv.innerHTML += 'Prompting for input.<br>';
+                        break;
+                    case 7:
+                        outputDiv.innerHTML += `Reading input: n = ${n}<br>`;
+                        break;
+                    case 9:
+                        outputDiv.innerHTML += `Printing: The first ${n} natural numbers are:<br>`;
+                        finalResult.innerHTML += `The first ${n} natural numbers are:\n`;
+                        break;
+                    case 10:
+                        if (i <= n) {
+                            outputDiv.innerHTML += `Printing: ${i}<br>`;
+                            finalResult.innerHTML += `${i} `;
+                            i++;
+                            currentStep = 9;
+                        } else {
+                            currentStep = 12;
+                        }
+                        break;
+                    case 12:
+                        outputDiv.innerHTML += 'Printing newline.<br>';
+                        finalResult.innerHTML += '\n';
+                        break;
+                    case 14:
+                        outputDiv.innerHTML += 'Execution completed.<br>';
+                        document.getElementById('nextStepButton').style.display = 'none';
+                        document.getElementById('restartButton').style.display = 'block';
+                        break;
+                }
+                currentStep++;
+            }
+        }
+
+        function highlightLine(lineNumber) {
+            const codeLines = codeArea.innerHTML.split('\n');
+            codeLines[lineNumber] = `<span class="highlight">${codeLines[lineNumber]}</span>`;
+            codeArea.innerHTML = codeLines.join('\n');
+        }
+
+        function restart() {
+            document.getElementById('inputSection').style.display = 'block';
+            document.getElementById('inputNum').value = '';
+            outputDiv.innerHTML = '';
+            finalResult.innerHTML = '';
+            document.getElementById('restartButton').style.display = 'none';
+            document.getElementById('nextStepButton').style.display = 'none';
+            codeArea.innerHTML = codeArea.innerHTML.replace(/<span class="highlight">/g, '').replace(/<\/span>/g, '');
+            currentStep = 0;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Largest Number Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .content {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .left-panel {
+            width: 50%;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-right: 1px solid #ccc;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .right-panel {
+            width: 50%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+        .highlight {
+            background-color: #FFFF00;
+        }
+        #output {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        #finalResult {
+            margin-top: 20px;
+            background-color: #90EE90;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        button, input {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #startButton {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #nextStepButton {
+            background-color: #FFEB3B;
+            color: black;
+        }
+        #restartButton {
+            background-color: #2196F3;
+            color: white;
+        }
+        footer {
+            background-color: #f0f0f0;
+            padding: 10px;
+            text-align: center;
+        }
+        .input-condition {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="left-panel">
+            <h2>Largest Number Finder</h2>
+            <pre id="codeArea">
+#include &lt;stdio.h&gt;
+
+int main() {
+    int num, largest = -1;
+
+    printf("Enter numbers (negative to end): ");
+    while (1) {
+        scanf("%d", &num);
+        if (num < 0) break; // Exit the loop if a negative number is entered
+        if (num > largest) largest = num; // Update largest if the current number is greater
+    }
+    printf("Largest number is: %d\n", largest);
+    return 0;
+}
+            </pre>
+            <div id="finalResult"></div>
+        </div>
+        <div class="right-panel">
+            <div class="input-condition">Input Condition: Enter positive numbers. Input a negative number to end.</div>
+            <h2>Execution Output</h2>
+            <div id="inputSection">
+                <input type="number" id="inputNum" placeholder="Enter a number">
+                <button onclick="enterNumber()" id="enterButton">Enter</button>
+                <button onclick="startExecution()" id="startButton">Start Execution</button>
+            </div>
+            <div id="output"></div>
+            <button onclick="nextStep()" id="nextStepButton" style="display: none;">Next Step</button>
+            <button onclick="restart()" id="restartButton" style="display: none;">Restart</button>
+        </div>
+    </div>
+    <footer>
+        A.MALLAIAH, Assoc.Professor, ECE Dept., SRGEC. +91-7416757609
+    </footer>
+
+    <script>
+        let currentStep = 0;
+        let num, largest = -1;
+        let numbers = [];
+        const outputDiv = document.getElementById('output');
+        const codeArea = document.getElementById('codeArea');
+        const finalResult = document.getElementById('finalResult');
+
+        function enterNumber() {
+            let input = parseInt(document.getElementById('inputNum').value);
+            numbers.push(input);
+            document.getElementById('inputNum').value = '';
+            outputDiv.innerHTML += `Entered number: ${input}<br>`;
+        }
+
+        function startExecution() {
+            document.getElementById('inputSection').style.display = 'none';
+            document.getElementById('nextStepButton').style.display = 'block';
+            outputDiv.innerHTML += 'Execution started.<br>';
+            currentStep = 0;
+            nextStep();
+        }
+
+        function nextStep() {
+            const codeLines = codeArea.innerText.split('\n');
+            if (currentStep < codeLines.length) {
+                highlightLine(currentStep);
+                switch(currentStep) {
+                    case 4:
+                        outputDiv.innerHTML += 'Initializing variables: num, largest = -1<br>';
+                        break;
+                    case 6:
+                        outputDiv.innerHTML += 'Prompting for input.<br>';
+                        break;
+                    case 8:
+                        if (numbers.length > 0) {
+                            num = numbers.shift();
+                            outputDiv.innerHTML += `Reading input: num = ${num}<br>`;
+                            if (num < 0) {
+                                outputDiv.innerHTML += 'Negative number entered. Exiting loop.<br>';
+                                currentStep = 11;
+                            }
+                        } else {
+                            outputDiv.innerHTML += 'No more numbers to process.<br>';
+                            currentStep = 11;
+                        }
+                        break;
+                    case 9:
+                        if (num > largest) {
+                            largest = num;
+                            outputDiv.innerHTML += `Updating largest: ${largest}<br>`;
+                        }
+                        currentStep = 7;
+                        break;
+                    case 12:
+                        outputDiv.innerHTML += `Printing result.<br>`;
+                        finalResult.innerHTML = `Largest number is: ${largest}`;
+                        document.getElementById('nextStepButton').style.display = 'none';
+                        document.getElementById('restartButton').style.display = 'block';
+                        break;
+                }
+                currentStep++;
+            }
+        }
+
+        function highlightLine(lineNumber) {
+            const codeLines = codeArea.innerHTML.split('\n');
+            codeLines[lineNumber] = `<span class="highlight">${codeLines[lineNumber]}</span>`;
+            codeArea.innerHTML = codeLines.join('\n');
+        }
+
+        function restart() {
+            document.getElementById('inputSection').style.display = 'block';
+            document.getElementById('inputNum').value = '';
+            outputDiv.innerHTML = '';
+            finalResult.innerHTML = '';
+            document.getElementById('restartButton').style.display = 'none';
+            document.getElementById('nextStepButton').style.display = 'none';
+            codeArea.innerHTML = codeArea.innerHTML.replace(/<span class="highlight">/g, '').replace(/<\/span>/g, '');
+            currentStep = 0;
+            largest = -1;
+            numbers = [];
+        }
+    </script>
+</body>
+</html>

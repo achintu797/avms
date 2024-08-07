@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Level Determiner Simulator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .content {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .left-panel {
+            width: 66.67%;
+            padding: 20px;
+            border-right: 1px solid #ccc;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .right-panel {
+            width: 33.33%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+        .highlight {
+            background-color: yellow;
+        }
+        #output, #finalResult {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        button, input {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #startButton {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #nextStepButton {
+            background-color: #FFEB3B;
+            color: black;
+        }
+        #restartButton {
+            background-color: #2196F3;
+            color: white;
+        }
+        footer {
+            background-color: #f0f0f0;
+            padding: 10px;
+            text-align: center;
+        }
+        .final-highlight {
+            background-color: #90EE90;
+            font-weight: bold;
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="left-panel">
+            <h2><strong>School Level Determiner</strong></h2>
+            <pre id="codeArea">
+#include &lt;stdio.h&gt;
+
+int main() {
+    int age;
+    printf("Enter the age of the student: ");
+    scanf("%d", &age);
+
+    if (age >= 5 && age <= 6) {
+        printf("Kindergarten\n");
+    } else if (age >= 7 && age <= 10) {
+        printf("Elementary\n");
+    } else if (age >= 11 && age <= 14) {
+        printf("Middle School\n");
+    } else if (age >= 15 && age <= 18) {
+        printf("High School\n");
+    } else {
+        printf("Not in school age\n");
+    }
+    return 0;
+}
+            </pre>
+            <div id="finalResult"></div>
+        </div>
+        <div class="right-panel">
+            <h2>Execution Output</h2>
+            <div id="inputSection">
+                <input type="number" id="inputAge" placeholder="Enter student's age">
+                <button onclick="startExecution()" id="startButton">Start Execution</button>
+            </div>
+            <div id="output"></div>
+            <button onclick="nextStep()" id="nextStepButton" style="display: none;">Next Step</button>
+            <button onclick="restart()" id="restartButton" style="display: none;">Restart</button>
+        </div>
+    </div>
+    <footer>
+        A.MALLAIAH, Assoc.Professor, ECE Dept., SRGEC. +91-7416757609
+    </footer>
+
+    <script>
+        let currentStep = 0;
+        let age;
+        const outputDiv = document.getElementById('output');
+        const codeArea = document.getElementById('codeArea');
+        const finalResult = document.getElementById('finalResult');
+
+        function startExecution() {
+            age = parseInt(document.getElementById('inputAge').value);
+            document.getElementById('inputSection').style.display = 'none';
+            document.getElementById('nextStepButton').style.display = 'block';
+            outputDiv.innerHTML = 'Execution started.<br>';
+            currentStep = 0;
+            nextStep();
+        }
+
+        function nextStep() {
+            const codeLines = codeArea.innerText.split('\n');
+            if (currentStep < codeLines.length) {
+                highlightLine(currentStep);
+                switch(currentStep) {
+                    case 4:
+                        outputDiv.innerHTML += 'Declaring variable age.<br>';
+                        break;
+                    case 5:
+                        outputDiv.innerHTML += 'Prompting user for input.<br>';
+                        break;
+                    case 6:
+                        outputDiv.innerHTML += `Reading age: ${age}<br>`;
+                        break;
+                    case 8:
+                        if (age >= 5 && age <= 6) {
+                            outputDiv.innerHTML += `Age is ${age}. Entering first if block (Kindergarten).<br>`;
+                        } else if (age >= 7 && age <= 10) {
+                            outputDiv.innerHTML += `Age is ${age}. Entering first else if block (Elementary).<br>`;
+                            currentStep = 10;
+                        } else if (age >= 11 && age <= 14) {
+                            outputDiv.innerHTML += `Age is ${age}. Entering second else if block (Middle School).<br>`;
+                            currentStep = 12;
+                        } else if (age >= 15 && age <= 18) {
+                            outputDiv.innerHTML += `Age is ${age}. Entering third else if block (High School).<br>`;
+                            currentStep = 14;
+                        } else {
+                            outputDiv.innerHTML += `Age is ${age}. Entering else block (Not in school age).<br>`;
+                            currentStep = 16;
+                        }
+                        break;
+                    case 9:
+                    case 11:
+                    case 13:
+                    case 15:
+                    case 17:
+                        let result = age >= 5 && age <= 6 ? "Kindergarten" :
+                                     age >= 7 && age <= 10 ? "Elementary" :
+                                     age >= 11 && age <= 14 ? "Middle School" :
+                                     age >= 15 && age <= 18 ? "High School" :
+                                     "Not in school age";
+                        outputDiv.innerHTML += `Printing result: ${result}<br>`;
+                        finalResult.innerHTML = `<span class="final-highlight">Final Result: Age ${age} - ${result}</span>`;
+                        document.getElementById('nextStepButton').style.display = 'none';
+                        document.getElementById('restartButton').style.display = 'block';
+                        break;
+                }
+                currentStep++;
+            }
+        }
+
+        function highlightLine(lineNumber) {
+            const codeLines = codeArea.innerHTML.split('\n');
+            codeLines[lineNumber] = `<span class="highlight">${codeLines[lineNumber]}</span>`;
+            codeArea.innerHTML = codeLines.join('\n');
+        }
+
+        function restart() {
+            document.getElementById('inputSection').style.display = 'block';
+            document.getElementById('inputAge').value = '';
+            outputDiv.innerHTML = '';
+            finalResult.innerHTML = '';
+            document.getElementById('restartButton').style.display = 'none';
+            document.getElementById('nextStepButton').style.display = 'none';
+            codeArea.innerHTML = codeArea.innerHTML.replace(/<span class="highlight">/g, '').replace(/<\/span>/g, '');
+            currentStep = 0;
+        }
+    </script>
+</body>
+</html>

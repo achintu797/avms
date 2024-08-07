@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Average Calculator Simulator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .content {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .left-panel {
+            width: 66.67%;
+            padding: 20px;
+            border-right: 1px solid #ccc;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .right-panel {
+            width: 33.33%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+        .highlight {
+            background-color: yellow;
+        }
+        #output, #finalResult {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        button, input {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #startButton {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #nextStepButton {
+            background-color: #FFEB3B;
+            color: black;
+        }
+        #restartButton {
+            background-color: #2196F3;
+            color: white;
+        }
+        footer {
+            background-color: #f0f0f0;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="left-panel">
+            <h2><strong>Average Calculator</strong></h2>
+            <pre id="codeArea">
+#include &lt;stdio.h&gt;
+
+int main() {
+    int a, b, c;
+    double average;
+    printf("Enter 3 integers: ");
+    scanf("%d %d %d", &a, &b, &c);
+    average = (a + b + c) / 3.0;
+    printf("\nTheir average is %3.1f\n", average);
+    return 0;
+}
+            </pre>
+            <div id="finalResult"></div>
+        </div>
+        <div class="right-panel">
+            <h2>Execution Output</h2>
+            <div id="inputSection">
+                <input type="number" id="inputA" placeholder="Enter first integer">
+                <input type="number" id="inputB" placeholder="Enter second integer">
+                <input type="number" id="inputC" placeholder="Enter third integer">
+                <button onclick="startExecution()" id="startButton">Start Execution</button>
+            </div>
+            <div id="output"></div>
+            <button onclick="nextStep()" id="nextStepButton" style="display: none;">Next Step</button>
+            <button onclick="restart()" id="restartButton" style="display: none;">Restart</button>
+        </div>
+    </div>
+    <footer>
+        A.MALLAIAH, Assoc.Professor, ECE Dept., SRGEC. +91-7416757609
+    </footer>
+
+    <script>
+        let currentStep = 0;
+        let a, b, c, average;
+        const outputDiv = document.getElementById('output');
+        const codeArea = document.getElementById('codeArea');
+        const finalResult = document.getElementById('finalResult');
+
+        function startExecution() {
+            a = parseInt(document.getElementById('inputA').value);
+            b = parseInt(document.getElementById('inputB').value);
+            c = parseInt(document.getElementById('inputC').value);
+            document.getElementById('inputSection').style.display = 'none';
+            document.getElementById('nextStepButton').style.display = 'block';
+            outputDiv.innerHTML = 'Execution started.<br>';
+            currentStep = 0;
+            nextStep();
+        }
+
+        function nextStep() {
+            const codeLines = codeArea.innerText.split('\n');
+            if (currentStep < codeLines.length) {
+                highlightLine(currentStep);
+                switch(currentStep) {
+                    case 4:
+                        outputDiv.innerHTML += 'Declaring variables a, b, c, and average.<br>';
+                        break;
+                    case 6:
+                        outputDiv.innerHTML += 'Prompting user for input.<br>';
+                        break;
+                    case 7:
+                        outputDiv.innerHTML += `Reading user input: a=${a}, b=${b}, c=${c}<br>`;
+                        break;
+                    case 8:
+                        average = (a + b + c) / 3.0;
+                        outputDiv.innerHTML += `Calculating average: (${a} + ${b} + ${c}) / 3.0 = ${average.toFixed(1)}<br>`;
+                        break;
+                    case 9:
+                        outputDiv.innerHTML += `Printing result: Their average is ${average.toFixed(1)}<br>`;
+                        finalResult.innerHTML = `<strong>Final Result:</strong> The average of ${a}, ${b}, and ${c} is ${average.toFixed(1)}`;
+                        document.getElementById('nextStepButton').style.display = 'none';
+                        document.getElementById('restartButton').style.display = 'block';
+                        break;
+                }
+                currentStep++;
+            }
+        }
+
+        function highlightLine(lineNumber) {
+            const codeLines = codeArea.innerHTML.split('\n');
+            codeLines[lineNumber] = `<span class="highlight">${codeLines[lineNumber]}</span>`;
+            codeArea.innerHTML = codeLines.join('\n');
+        }
+
+        function restart() {
+            document.getElementById('inputSection').style.display = 'block';
+            document.getElementById('inputA').value = '';
+            document.getElementById('inputB').value = '';
+            document.getElementById('inputC').value = '';
+            outputDiv.innerHTML = '';
+            finalResult.innerHTML = '';
+            document.getElementById('restartButton').style.display = 'none';
+            document.getElementById('nextStepButton').style.display = 'none';
+            codeArea.innerHTML = codeArea.innerHTML.replace(/<span class="highlight">/g, '').replace(/<\/span>/g, '');
+            currentStep = 0;
+        }
+    </script>
+</body>
+</html>

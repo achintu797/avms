@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .content {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .left-panel {
+            width: 50%;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-right: 1px solid #ccc;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .right-panel {
+            width: 50%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+        .highlight {
+            background-color: #FFFF00;
+        }
+        #output {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        #finalResult {
+            margin-top: 20px;
+            background-color: #90EE90;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre;
+        }
+        button, input {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #startButton {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #nextStepButton {
+            background-color: #FFEB3B;
+            color: black;
+        }
+        #restartButton {
+            background-color: #2196F3;
+            color: white;
+        }
+        footer {
+            background-color: #f0f0f0;
+            padding: 10px;
+            text-align: center;
+        }
+        .input-condition {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="left-panel">
+            <h2>Grade Calculator</h2>
+            <pre id="codeArea">
+#include &lt;stdio.h&gt;
+
+int main() {
+    int score;
+    char continueCalc;
+
+    do {
+        printf("Enter your score (0-100): ");
+        scanf("%d", &score);
+
+        switch (score / 10) {
+            case 10:
+            case 9:
+                printf("Grade: A\n");
+                break;
+            case 8:
+                printf("Grade: B\n");
+                break;
+            case 7:
+                printf("Grade: C\n");
+                break;
+            case 6:
+                printf("Grade: D\n");
+                break;
+            case 5:
+            case 4:
+            case 3:
+            case 2:
+            case 1:
+            case 0:
+                printf("Grade: F\n");
+                break;
+            default:
+                printf("Invalid score! Please enter a score between 0 and 100.\n");
+        }
+
+        printf("Do you want to calculate another grade? (y/n): ");
+        scanf(" %c", &continueCalc);
+
+    } while (continueCalc == 'y' || continueCalc == 'Y');
+
+    printf("Thank you for using the grade calculator!\n");
+    return 0;
+}
+            </pre>
+            <div id="finalResult"></div>
+        </div>
+        <div class="right-panel">
+            <div class="input-condition">Input Condition: Enter a score between 0 and 100</div>
+            <h2>Execution Output</h2>
+            <div id="inputSection">
+                <input type="number" id="inputScore" placeholder="Enter your score (0-100)">
+                <button onclick="startExecution()" id="startButton">Start Execution</button>
+            </div>
+            <div id="output"></div>
+            <button onclick="nextStep()" id="nextStepButton" style="display: none;">Next Step</button>
+            <button onclick="restart()" id="restartButton" style="display: none;">Restart</button>
+        </div>
+    </div>
+    <footer>
+        A.MALLAIAH, Assoc.Professor, ECE Dept., SRGEC. +91-7416757609
+    </footer>
+
+    <script>
+        let currentStep = 0;
+        let score, continueCalc;
+        const outputDiv = document.getElementById('output');
+        const codeArea = document.getElementById('codeArea');
+        const finalResult = document.getElementById('finalResult');
+
+        function startExecution() {
+            score = parseInt(document.getElementById('inputScore').value);
+            continueCalc = '';
+            document.getElementById('inputSection').style.display = 'none';
+            document.getElementById('nextStepButton').style.display = 'block';
+            outputDiv.innerHTML = 'Execution started.<br>';
+            finalResult.innerHTML = '';
+            currentStep = 0;
+            nextStep();
+        }
+
+        function nextStep() {
+            const codeLines = codeArea.innerText.split('\n');
+            if (currentStep < codeLines.length) {
+                highlightLine(currentStep);
+                switch(currentStep) {
+                    case 4:
+                    case 5:
+                        outputDiv.innerHTML += 'Initializing variables: score, continueCalc<br>';
+                        break;
+                    case 8:
+                        outputDiv.innerHTML += `Reading input: score = ${score}<br>`;
+                        break;
+                    case 10:
+                        outputDiv.innerHTML += `Calculating grade for score: ${score}<br>`;
+                        break;
+                    case 11:
+                    case 12:
+                    case 13:
+                    case 14:
+                    case 15:
+                    case 16:
+                    case 17:
+                    case 18:
+                    case 19:
+                    case 20:
+                    case 21:
+                    case 22:
+                    case 23:
+                    case 24:
+                    case 25:
+                    case 26:
+                    case 27:
+                        let grade;
+                        if (score >= 90 && score <= 100) grade = 'A';
+                        else if (score >= 80 && score < 90) grade = 'B';
+                        else if (score >= 70 && score < 80) grade = 'C';
+                        else if (score >= 60 && score < 70) grade = 'D';
+                        else if (score >= 0 && score < 60) grade = 'F';
+                        else grade = 'Invalid';
+                        
+                        if (grade !== 'Invalid') {
+                            outputDiv.innerHTML += `Grade: ${grade}<br>`;
+                            finalResult.innerHTML = `Grade: ${grade}`;
+                        } else {
+                            outputDiv.innerHTML += 'Invalid score! Please enter a score between 0 and 100.<br>';
+                            finalResult.innerHTML = 'Invalid score!';
+                        }
+                        currentStep = 29;
+                        break;
+                    case 30:
+                        outputDiv.innerHTML += 'Asking to continue...<br>';
+                        document.getElementById('nextStepButton').style.display = 'none';
+                        document.getElementById('restartButton').style.display = 'block';
+                        break;
+                    case 33:
+                        outputDiv.innerHTML += 'Thank you for using the grade calculator!<br>';
+                        break;
+                }
+                currentStep++;
+            }
+        }
+
+        function highlightLine(lineNumber) {
+            const codeLines = codeArea.innerHTML.split('\n');
+            codeLines[lineNumber] = `<span class="highlight">${codeLines[lineNumber]}</span>`;
+            codeArea.innerHTML = codeLines.join('\n');
+        }
+
+        function restart() {
+            document.getElementById('inputSection').style.display = 'block';
+            document.getElementById('inputScore').value = '';
+            outputDiv.innerHTML = '';
+            finalResult.innerHTML = '';
+            document.getElementById('restartButton').style.display = 'none';
+            document.getElementById('nextStepButton').style.display = 'none';
+            codeArea.innerHTML = codeArea.innerHTML.replace(/<span class="highlight">/g, '').replace(/<\/span>/g, '');
+            currentStep = 0;
+        }
+    </script>
+</body>
+</html>
